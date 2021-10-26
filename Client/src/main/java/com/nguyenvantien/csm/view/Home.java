@@ -4,21 +4,25 @@
  */
 package com.nguyenvantien.csm.view;
 
+import com.google.gson.Gson;
+import com.nguyenvantien.csm.api.BillApi;
 import com.nguyenvantien.csm.api.CategoryApi;
 import com.nguyenvantien.csm.api.ItemApi;
 import com.nguyenvantien.csm.model.Item;
-import com.nguyenvantien.csm.model.SpinnerEditor;
+import com.nguyenvantien.csm.utils.ItemsListUtils;
 import com.nguyenvantien.csm.utils.StringUtils;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 
 /**
  *
@@ -34,7 +38,6 @@ public class Home extends javax.swing.JFrame {
         setExtendedState(MAXIMIZED_BOTH);
         setCategory();
         setTable();
-        
     }
     private void setCategory() throws IOException{
         DefaultListModel listModel;
@@ -43,6 +46,7 @@ public class Home extends javax.swing.JFrame {
         for (int i = 0; i < lists.size(); i++) {
             listModel.add(i, lists.get(i).toString());
         }
+        listModel.add(0, "tất cả");
         categoryList.setModel(listModel);
     }
     private void setTable() throws IOException{
@@ -54,7 +58,11 @@ public class Home extends javax.swing.JFrame {
                 StringUtils.formatMoney(lists.get(i).getPrice().toString()),
                 lists.get(i).getUnit(),
             });
+            ItemsListUtils.itemsList.put(lists.get(i).getName(), lists.get(i).getId());
         }
+        ItemsListUtils.itemsList.entrySet().forEach(e->{
+            System.out.println(e);
+        });
     }
 
     /**
@@ -80,7 +88,7 @@ public class Home extends javax.swing.JFrame {
         jPanel18 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jPanel16 = new javax.swing.JPanel();
-        jLabel6 = new javax.swing.JLabel();
+        totalMoneyLb = new javax.swing.JLabel();
         jPanel19 = new javax.swing.JPanel();
         jPanel20 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
@@ -90,19 +98,20 @@ public class Home extends javax.swing.JFrame {
         jPanel23 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
         jPanel24 = new javax.swing.JPanel();
-        jLabel13 = new javax.swing.JLabel();
+        customerPayTf = new javax.swing.JTextField();
+        finalTotalLb = new javax.swing.JLabel();
         jPanel13 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        payBt = new javax.swing.JButton();
+        resetBt = new javax.swing.JButton();
         jPanel14 = new javax.swing.JPanel();
         jPanel15 = new javax.swing.JPanel();
         jPanel29 = new javax.swing.JPanel();
         upQuantityBt = new javax.swing.JButton();
         jPanel30 = new javax.swing.JPanel();
-        jButton8 = new javax.swing.JButton();
+        downQuantityBt = new javax.swing.JButton();
         jPanel17 = new javax.swing.JPanel();
         jPanel27 = new javax.swing.JPanel();
-        jButton6 = new javax.swing.JButton();
+        deleteItemBt = new javax.swing.JButton();
         jPanel28 = new javax.swing.JPanel();
         addItemBt = new javax.swing.JButton();
         jPanel25 = new javax.swing.JPanel();
@@ -173,7 +182,7 @@ public class Home extends javax.swing.JFrame {
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 199, Short.MAX_VALUE)
+            .addGap(0, 206, Short.MAX_VALUE)
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -190,16 +199,16 @@ public class Home extends javax.swing.JFrame {
 
         jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        jLabel5.setText("Tiền hàng:");
+        jLabel5.setText("Tiền hàng :");
         jPanel18.add(jLabel5);
 
         jPanel12.add(jPanel18);
 
         jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
-        jLabel6.setText("0");
-        jLabel6.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
-        jPanel16.add(jLabel6);
+        totalMoneyLb.setText("0 VNĐ");
+        totalMoneyLb.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+        jPanel16.add(totalMoneyLb);
 
         jPanel12.add(jPanel16);
 
@@ -209,12 +218,16 @@ public class Home extends javax.swing.JFrame {
 
         jPanel20.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        jLabel8.setText("Giảm:");
+        jLabel8.setText("Giảm(%) :");
         jPanel20.add(jLabel8);
 
         jPanel19.add(jPanel20);
 
         jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        discountSp.setModel(new javax.swing.SpinnerNumberModel(0, 0, 100, 5));
+        discountSp.setMinimumSize(new java.awt.Dimension(60, 30));
+        discountSp.setPreferredSize(new java.awt.Dimension(60, 30));
         jPanel21.add(discountSp);
 
         jPanel19.add(jPanel21);
@@ -225,16 +238,20 @@ public class Home extends javax.swing.JFrame {
 
         jPanel23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        jLabel12.setText("Thành tiền:");
+        jLabel12.setText("Tiền khách trả :");
         jPanel23.add(jLabel12);
 
         jPanel22.add(jPanel23);
 
         jPanel24.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
-        jLabel13.setText("0");
-        jLabel13.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
-        jPanel24.add(jLabel13);
+        customerPayTf.setColumns(6);
+        customerPayTf.setText("0");
+        jPanel24.add(customerPayTf);
+
+        finalTotalLb.setText("VNĐ");
+        finalTotalLb.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+        jPanel24.add(finalTotalLb);
 
         jPanel22.add(jPanel24);
 
@@ -242,11 +259,21 @@ public class Home extends javax.swing.JFrame {
 
         jPanel13.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
 
-        jButton2.setText("Thanh toán");
-        jPanel13.add(jButton2);
+        payBt.setText("Thanh toán");
+        payBt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                payBtActionPerformed(evt);
+            }
+        });
+        jPanel13.add(payBt);
 
-        jButton3.setText("Hủy");
-        jPanel13.add(jButton3);
+        resetBt.setText("Hủy");
+        resetBt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetBtActionPerformed(evt);
+            }
+        });
+        jPanel13.add(resetBt);
 
         jPanel11.add(jPanel13);
 
@@ -267,7 +294,7 @@ public class Home extends javax.swing.JFrame {
         jPanel29.setLayout(jPanel29Layout);
         jPanel29Layout.setHorizontalGroup(
             jPanel29Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 79, Short.MAX_VALUE)
+            .addGap(0, 82, Short.MAX_VALUE)
         );
         jPanel29Layout.setVerticalGroup(
             jPanel29Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -276,7 +303,7 @@ public class Home extends javax.swing.JFrame {
 
         jPanel15.add(jPanel29);
 
-        upQuantityBt.setText("Tăng++");
+        upQuantityBt.setText("Tăng + +");
         upQuantityBt.setMaximumSize(new java.awt.Dimension(120, 21));
         upQuantityBt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -289,7 +316,7 @@ public class Home extends javax.swing.JFrame {
         jPanel30.setLayout(jPanel30Layout);
         jPanel30Layout.setHorizontalGroup(
             jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 79, Short.MAX_VALUE)
+            .addGap(0, 82, Short.MAX_VALUE)
         );
         jPanel30Layout.setVerticalGroup(
             jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -298,9 +325,14 @@ public class Home extends javax.swing.JFrame {
 
         jPanel15.add(jPanel30);
 
-        jButton8.setText("Giảm - -");
-        jButton8.setMaximumSize(new java.awt.Dimension(120, 21));
-        jPanel15.add(jButton8);
+        downQuantityBt.setText("Giảm - -");
+        downQuantityBt.setMaximumSize(new java.awt.Dimension(120, 21));
+        downQuantityBt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                downQuantityBtActionPerformed(evt);
+            }
+        });
+        jPanel15.add(downQuantityBt);
 
         jPanel14.add(jPanel15);
 
@@ -310,7 +342,7 @@ public class Home extends javax.swing.JFrame {
         jPanel27.setLayout(jPanel27Layout);
         jPanel27Layout.setHorizontalGroup(
             jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 79, Short.MAX_VALUE)
+            .addGap(0, 82, Short.MAX_VALUE)
         );
         jPanel27Layout.setVerticalGroup(
             jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -319,15 +351,20 @@ public class Home extends javax.swing.JFrame {
 
         jPanel17.add(jPanel27);
 
-        jButton6.setText("Xóa >>");
-        jButton6.setMaximumSize(new java.awt.Dimension(120, 21));
-        jPanel17.add(jButton6);
+        deleteItemBt.setText("Xóa >>");
+        deleteItemBt.setMaximumSize(new java.awt.Dimension(120, 21));
+        deleteItemBt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteItemBtActionPerformed(evt);
+            }
+        });
+        jPanel17.add(deleteItemBt);
 
         javax.swing.GroupLayout jPanel28Layout = new javax.swing.GroupLayout(jPanel28);
         jPanel28.setLayout(jPanel28Layout);
         jPanel28Layout.setHorizontalGroup(
             jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 79, Short.MAX_VALUE)
+            .addGap(0, 82, Short.MAX_VALUE)
         );
         jPanel28Layout.setVerticalGroup(
             jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -351,7 +388,7 @@ public class Home extends javax.swing.JFrame {
         jPanel25.setLayout(jPanel25Layout);
         jPanel25Layout.setHorizontalGroup(
             jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 79, Short.MAX_VALUE)
+            .addGap(0, 82, Short.MAX_VALUE)
         );
         jPanel25Layout.setVerticalGroup(
             jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -405,6 +442,11 @@ public class Home extends javax.swing.JFrame {
 
         jScrollPane1.setMaximumSize(new java.awt.Dimension(32767, 122));
 
+        categoryList.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "tất cả" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
         categoryList.setMaximumSize(new java.awt.Dimension(32, 55));
         categoryList.setMinimumSize(new java.awt.Dimension(32, 55));
         categoryList.setPreferredSize(new java.awt.Dimension(32, 55));
@@ -477,7 +519,8 @@ public class Home extends javax.swing.JFrame {
     private void categoryListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_categoryListMouseClicked
         try {
             // TODO add your handling code here:
-            List<Item> lists = ItemApi.getItemsByCategory(categoryList.getSelectedValue());
+            String category = (categoryList.getSelectedValue().equals("tất cả")) ? "" : categoryList.getSelectedValue();
+            List<Item> lists = ItemApi.getItemsByCategory(category);
             setTable(lists);
         } catch (IOException ex) {
             Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
@@ -506,29 +549,111 @@ public class Home extends javax.swing.JFrame {
             String price = (String) listsItemTb.getValueAt(indexOfItem, 1);
             addRowBillTable(name, price);
         }
+        setTotalMoney();
     }//GEN-LAST:event_addItemBtActionPerformed
 
     private void upQuantityBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upQuantityBtActionPerformed
-        // TODO add your handling code here:
+        int index = billTb.getSelectedRow();
+        if(index >= 0){
+            setQuantityAndTotalInRowBillTable(index, true);
+        }
+        setTotalMoney();
     }//GEN-LAST:event_upQuantityBtActionPerformed
 
-    private void addRowBillTable(String name, String price){
+    private void downQuantityBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downQuantityBtActionPerformed
+        int index = billTb.getSelectedRow();
+        if(index >= 0){
+            setQuantityAndTotalInRowBillTable(index, false);
+        }
+        setTotalMoney();
+    }//GEN-LAST:event_downQuantityBtActionPerformed
+
+    private void deleteItemBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteItemBtActionPerformed
+        int index = billTb.getSelectedRow();
+        if(index >= 0){
+            DefaultTableModel defaultTableModel = (DefaultTableModel) billTb.getModel();
+            defaultTableModel.removeRow(index);
+        }
+        setTotalMoney();
+    }//GEN-LAST:event_deleteItemBtActionPerformed
+
+    private void payBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_payBtActionPerformed
+        String discountStr = discountSp.getValue().toString();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String  dateStr = dateFormat.format(new Date());
+        Double totalMoney = StringUtils.toValue(totalMoneyLb.getText());
+        if(totalMoney==0){
+            System.out.println("chưa có sản phẩm nào");
+            return;
+        }
+        int discount = Integer.parseInt(discountStr);
+        System.out.println(discount);
+        Double finalTotal = totalMoney - (totalMoney/100)*discount;
+        String totalStr = String.valueOf(finalTotal);
+        List<Map<String, Integer>> itemsList = new ArrayList<>();
+        Map<String,Integer> idItem = ItemsListUtils.getIds();
+        for (int i = 0; i < billTb.getRowCount(); i++) {
+            Map<String, Integer> item = new TreeMap<>();
+            item.put("idItem",idItem.get(billTb.getModel().getValueAt(i, 0)));
+            item.put("quantity",Integer.parseInt(billTb.getModel().getValueAt(i, 1).toString()));
+            itemsList.add(item);
+        }
+        Gson gson = new Gson();
+        String itemsListStr = gson.toJson(itemsList);
+        System.out.println("items: " + itemsListStr);
+        boolean resp = true;
+        try {
+            resp = BillApi.insertBill(discountStr, totalStr, dateStr, itemsListStr);
+        } catch (IOException ex) {
+            Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        new Bill(dateStr, String.valueOf(totalMoney), discountStr, String.valueOf(finalTotal), customerPayTf.getText(), this).setVisible(true);
+        System.out.println(resp);
+    }//GEN-LAST:event_payBtActionPerformed
+
+    private void resetBtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetBtActionPerformed
+        resetValue();
+    }//GEN-LAST:event_resetBtActionPerformed
+
+    public void resetValue(){
         DefaultTableModel defaultTableModel = (DefaultTableModel) billTb.getModel();
+        defaultTableModel.setNumRows(0);
+        totalMoneyLb.setText(StringUtils.formatMoney(String.valueOf(0)));
+        discountSp.setValue(0);
+        customerPayTf.setText("0");
+    }
+    private void addRowBillTable(String name, String price){
         int index = checkNameInBill(name);
         if(index >= 0){
-            Integer newQuantity = Integer.parseInt(defaultTableModel.getValueAt(index, 1).toString()) + 1;
-            Double total = StringUtils.toValue(defaultTableModel.getValueAt(index, 2).toString())*newQuantity;
-            defaultTableModel.setValueAt(newQuantity, index, 1);
-            defaultTableModel.setValueAt(StringUtils.formatMoney(total.toString()), index, 3);
+            setQuantityAndTotalInRowBillTable(index, true);
         } else{
+            DefaultTableModel defaultTableModel = (DefaultTableModel) billTb.getModel();
             defaultTableModel.addRow(new Object[]{
-            name,
-            1,
-            price,
-            price
-        });
+            name, 1, price, price
+            });
         }
         
+    }
+    
+    private void setQuantityAndTotalInRowBillTable(int index, boolean check){
+        DefaultTableModel defaultTableModel = (DefaultTableModel) billTb.getModel();
+        Integer quantity = Integer.parseInt(defaultTableModel.getValueAt(index, 1).toString());
+        if(check){
+            quantity = Integer.parseInt(defaultTableModel.getValueAt(index, 1).toString()) + 1;
+        } else if(quantity > 1){
+            quantity = Integer.parseInt(defaultTableModel.getValueAt(index, 1).toString()) - 1;
+        }
+        Double total = StringUtils.toValue(defaultTableModel.getValueAt(index, 2).toString())*quantity;
+        defaultTableModel.setValueAt(quantity, index, 1);
+        defaultTableModel.setValueAt(StringUtils.formatMoney(total.toString()), index, 3);
+    }
+    
+    private void setTotalMoney(){
+        Double totalMoney = 0.0;
+        for (int i = 0; i < billTb.getRowCount(); i++) {
+            totalMoney += StringUtils.toValue(billTb.getValueAt(i, 3).toString());
+        }
+        totalMoneyLb.setText(StringUtils.formatMoney(totalMoney.toString()));
     }
     
     private int checkNameInBill(String name){
@@ -554,62 +679,60 @@ public class Home extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new Home().setVisible(true);
-                } catch (IOException ex) {
-                    Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                try {
+//                    new Home().setVisible(true);
+//                } catch (IOException ex) {
+//                    Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//                
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addItemBt;
     private javax.swing.JPanel bill;
     private javax.swing.JTable billTb;
     private javax.swing.JList<String> categoryList;
+    private javax.swing.JTextField customerPayTf;
+    private javax.swing.JButton deleteItemBt;
     private javax.swing.JSpinner discountSp;
+    private javax.swing.JButton downQuantityBt;
+    private javax.swing.JLabel finalTotalLb;
     private javax.swing.JPanel items;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -648,8 +771,11 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable listsItemTb;
+    private javax.swing.JButton payBt;
+    private javax.swing.JButton resetBt;
     private javax.swing.JButton searchBt;
     private javax.swing.JTextField searchTf;
+    private javax.swing.JLabel totalMoneyLb;
     private javax.swing.JButton upQuantityBt;
     // End of variables declaration//GEN-END:variables
 }

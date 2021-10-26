@@ -12,15 +12,11 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 
@@ -55,6 +51,7 @@ public class ItemApi {
         .addParameter("category", category)
         .build();
         ((HttpRequestBase) httpGet).setURI(uri);
+        System.out.println("item by category: " + httpGet.getURI());
         HttpResponse httpResponse = client.execute(httpGet);
         String json_string = EntityUtils.toString(httpResponse.getEntity());
         System.out.println(json_string);
@@ -74,6 +71,7 @@ public class ItemApi {
         .addParameter("name", name)
         .build();
         ((HttpRequestBase) httpGet).setURI(uri);
+        System.out.println("item by name: " + httpGet.getURI());
         HttpResponse httpResponse = client.execute(httpGet);
         String json_string = EntityUtils.toString(httpResponse.getEntity());
         System.out.println(json_string);
