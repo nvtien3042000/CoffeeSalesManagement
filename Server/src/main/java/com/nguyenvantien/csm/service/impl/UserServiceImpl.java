@@ -3,7 +3,7 @@ package com.nguyenvantien.csm.service.impl;
 import java.util.Map;
 
 import com.nguyenvantien.csm.dao.UserDao;
-import com.nguyenvantien.csm.impl.UserDaoImpl;
+import com.nguyenvantien.csm.dao.impl.UserDaoImpl;
 import com.nguyenvantien.csm.service.UserService;
 
 public class UserServiceImpl implements UserService {

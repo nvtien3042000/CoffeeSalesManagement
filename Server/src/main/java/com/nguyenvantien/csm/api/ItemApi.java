@@ -28,6 +28,7 @@ public class ItemApi extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		List<Item> result = new ArrayList<>();
+		System.out.println("ok");
 		if(req.getParameter("category") != null) {
 			result = itemService.getItemsByCategory(req.getParameter("category"));
 		}else if(req.getParameter("name") != null){

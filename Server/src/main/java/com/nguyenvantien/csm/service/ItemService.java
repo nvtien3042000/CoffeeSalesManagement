@@ -8,4 +8,5 @@ public interface ItemService {
 	List<Item> getAllItem();
 	List<Item> getItemsByCategory(String category);
 	List<Item> getItemsByName(String name);
+	boolean insertItem(String name, Double price, String unit, Integer category);
 }

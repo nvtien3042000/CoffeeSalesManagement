@@ -3,7 +3,7 @@ package com.nguyenvantien.csm.service.impl;
 import java.util.List;
 
 import com.nguyenvantien.csm.dao.ItemDao;
-import com.nguyenvantien.csm.impl.ItemDaoImpl;
+import com.nguyenvantien.csm.dao.impl.ItemDaoImpl;
 import com.nguyenvantien.csm.model.Item;
 import com.nguyenvantien.csm.service.ItemService;
 
@@ -23,5 +23,9 @@ public class ItemServiceImpl implements ItemService{
 	@Override
 	public List<Item> getItemsByName(String name) {
 		return itemDao.getItemsByName(name);
+	}
+	@Override
+	public boolean insertItem(String name, Double price, String unit, Integer category) {
+		return itemDao.insertItem(name, price, unit, category);
 	}
 }

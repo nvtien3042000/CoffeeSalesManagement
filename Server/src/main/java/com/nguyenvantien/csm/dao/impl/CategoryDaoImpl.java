@@ -1,4 +1,4 @@
-package com.nguyenvantien.csm.impl;
+package com.nguyenvantien.csm.dao.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,7 +23,7 @@ public class CategoryDaoImpl implements CategoryDao{
 	}
 	public List<String> getAllCategory() {
 		List<String> result = new ArrayList<>();
-		String sql = "SELECT NAME FROM category;";
+		String sql = "SELECT name FROM category ORDER BY name;";
 		try {
 			st = conn.createStatement();
 			rs = st.executeQuery(sql);

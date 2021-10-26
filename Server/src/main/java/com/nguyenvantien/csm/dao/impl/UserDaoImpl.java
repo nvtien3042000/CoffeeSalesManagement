@@ -1,4 +1,4 @@
-package com.nguyenvantien.csm.impl;
+package com.nguyenvantien.csm.dao.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
