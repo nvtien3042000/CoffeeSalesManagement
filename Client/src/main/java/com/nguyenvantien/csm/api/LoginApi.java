@@ -1,52 +1,39 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nguyenvantien.csm.api;
 
-import com.nguyenvantien.csm.view.Login;
+import com.google.gson.Gson;
+import com.nguyenvantien.csm.model.UserDto;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.json.JSONObject;
 
-/**
- *
- * @author Admin
- */
 public class LoginApi {
     private LoginApi(){
         
     }
     
-    public static String isLogin(String userName, String password) throws UnsupportedEncodingException, IOException{
-        CloseableHttpClient client = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost("http://localhost:8080/Server/login");
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("userName", userName));
-        params.add(new BasicNameValuePair("password", password));
-        
-        httpPost.setEntity(new UrlEncodedFormEntity(params));
-        System.out.println(httpPost.getURI());
-        HttpResponse httpResponse = client.execute(httpPost);
-        String json_string = EntityUtils.toString(httpResponse.getEntity());
+    public static UserDto isLogin(String userName, String password) throws UnsupportedEncodingException, IOException{
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        String pBody = "userName=" + userName + "&password=" +password;
+        RequestBody body = RequestBody.create(mediaType, pBody);
+        Request request = new Request.Builder()
+          .url("http://localhost:8080/Server/login")
+          .method("POST", body)
+          .addHeader("Content-Type", "application/x-www-form-urlencoded")
+          .addHeader("Cookie", "JSESSIONID=4757831A611DE778CD24B4DD5BBE553D")
+          .build();
+        Response response = client.newCall(request).execute();
+        String json_string = response.body().string();
         System.out.println(json_string);
         JSONObject temp1 = new JSONObject(json_string);
-        System.out.println(temp1);
-            
-        return temp1.getString("role");
+        Gson gson = new Gson();
+        System.out.println(gson.fromJson(temp1.toString(), UserDto.class));;
+        return gson.fromJson(temp1.toString(), UserDto.class);
     } 
     
-//    public static void main(String[] args) throws IOException {
-//        new Login().setVisible(true);
-//    }
 }

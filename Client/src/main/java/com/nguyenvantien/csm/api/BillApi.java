@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.nguyenvantien.csm.api;
 
 import java.io.IOException;
@@ -17,11 +13,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-/**
- *
- * @author Admin
- */
 public class BillApi {
+    
     private BillApi(){
         
     }
