@@ -16,7 +16,6 @@ public class DBProvider {
 			ips = new FileInputStream(file);
 			props.load(ips);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

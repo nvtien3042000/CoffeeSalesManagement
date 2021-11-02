@@ -24,9 +24,9 @@ public class AddItemApi extends HttpServlet{
 		String name = req.getParameter("name");
 		Double price = Double.valueOf(req.getParameter("price"));
 		String unit = req.getParameter("unit");
-		Integer categoryId = Integer.valueOf(req.getParameter("category"));
+		String category = req.getParameter("category");
 		System.out.println("add");
-		boolean result = itemService.insertItem(name, price, unit, categoryId);
+		boolean result = itemService.insertItem(name, price, unit, category);
 		Gson gson = new Gson();
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");

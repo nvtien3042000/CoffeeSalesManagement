@@ -2,7 +2,6 @@ package com.nguyenvantien.csm.api;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,13 +9,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import com.google.gson.Gson;
 import com.nguyenvantien.csm.service.UserService;
 import com.nguyenvantien.csm.service.impl.UserServiceImpl;
 
-@WebServlet(urlPatterns = {"/login"})
-public class UserApi extends HttpServlet{
+@WebServlet(urlPatterns = {"/add-user"})
+public class AddUserApi extends HttpServlet{
 	private static UserService userService;
 	static {
 		userService = new UserServiceImpl();
@@ -25,10 +23,11 @@ public class UserApi extends HttpServlet{
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String userName = req.getParameter("userName");
 		String password = req.getParameter("password");
-		System.out.println(req.getRequestURI());
-		System.out.println(req.getRequestURL());
-		Map<String, String> result = userService.login(userName, password);
-		System.out.println(userName + " - " + password);
+		String fullName = req.getParameter("fullName");
+		String phoneNumber = req.getParameter("phoneNumber");
+		String address = req.getParameter("address");
+		String role = req.getParameter("role");
+		boolean result = userService.insertUser(userName, password, fullName, phoneNumber, address, role);
 		
 		Gson gson = new Gson();
 		resp.setContentType("application/json");
@@ -37,5 +36,4 @@ public class UserApi extends HttpServlet{
 		out.print(gson.toJson(result));
 		out.flush();
 	}
-	
 }

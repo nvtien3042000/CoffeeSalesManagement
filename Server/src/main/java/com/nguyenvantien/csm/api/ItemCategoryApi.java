@@ -13,11 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 import com.nguyenvantien.csm.model.Item;
+import com.nguyenvantien.csm.model.ItemCategoryDto;
 import com.nguyenvantien.csm.service.ItemService;
 import com.nguyenvantien.csm.service.impl.ItemServiceImpl;
 
-@WebServlet(urlPatterns = {"/item"})
-public class ItemApi extends HttpServlet{
+@WebServlet(urlPatterns = {"/item-category"})
+public class ItemCategoryApi extends HttpServlet{
 	private static ItemService itemService;
 	static {
 		itemService = new ItemServiceImpl();
@@ -25,15 +26,13 @@ public class ItemApi extends HttpServlet{
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		List<Item> result = new ArrayList<>();
+		List<ItemCategoryDto> result = new ArrayList<>();
 		System.out.println("ok");
-		if(req.getParameter("category") != null) {
-			result = itemService.getItemsByCategory(req.getParameter("category"));
-		}else if(req.getParameter("name") != null){
-			result = itemService.getItemsByName(req.getParameter("name"));
-		}else {
-			result = itemService.getAllItem();
+		String name = "";
+		if(req.getParameter("name") != null) {
+			name = req.getParameter("name");
 		}
+		result = itemService.getAllItemAndCategory(name);
 		
 		Gson gson = new Gson();
 		resp.setContentType("application/json");

@@ -2,8 +2,6 @@ package com.nguyenvantien.csm.api;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,29 +10,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
-import com.nguyenvantien.csm.model.Item;
 import com.nguyenvantien.csm.service.ItemService;
 import com.nguyenvantien.csm.service.impl.ItemServiceImpl;
 
-@WebServlet(urlPatterns = {"/item"})
-public class ItemApi extends HttpServlet{
+@WebServlet(urlPatterns = {"/update-item"})
+public class UpdateItemApi extends HttpServlet{
 	private static ItemService itemService;
 	static {
 		itemService = new ItemServiceImpl();
 	}
-	
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		List<Item> result = new ArrayList<>();
-		System.out.println("ok");
-		if(req.getParameter("category") != null) {
-			result = itemService.getItemsByCategory(req.getParameter("category"));
-		}else if(req.getParameter("name") != null){
-			result = itemService.getItemsByName(req.getParameter("name"));
-		}else {
-			result = itemService.getAllItem();
-		}
-		
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		System.out.println(req.getParameter("id"));
+		Integer id = Integer.valueOf(req.getParameter("id"));
+		String name = req.getParameter("name");
+		System.out.println(name);
+		Double price = Double.valueOf(req.getParameter("price"));
+		String unit = req.getParameter("unit");
+		String category = req.getParameter("category");
+		boolean result = itemService.updateItem(id, name, price, unit, category);
 		Gson gson = new Gson();
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
@@ -42,4 +36,7 @@ public class ItemApi extends HttpServlet{
 		out.print(gson.toJson(result));
 		out.flush();
 	}
+	
+	
+	
 }
