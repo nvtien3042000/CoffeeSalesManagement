@@ -3,6 +3,7 @@ package com.nguyenvantien.csm.api;
 import com.google.gson.Gson;
 import com.nguyenvantien.csm.model.Item;
 import com.nguyenvantien.csm.model.ItemCategoryDto;
+import com.nguyenvantien.csm.utils.ConfigHttpUtils;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,7 +31,7 @@ public class ItemApi {
     
     public static List<Item> getAllItem() throws IOException{
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet("http://localhost:8080/Server/item");
+        HttpGet httpGet = new HttpGet(ConfigHttpUtils.URL + "/item");
         HttpResponse httpResponse = client.execute(httpGet);
         String json_string = EntityUtils.toString(httpResponse.getEntity());
         System.out.println(json_string);
@@ -45,7 +46,7 @@ public class ItemApi {
     
     public static List<ItemCategoryDto> getAllItemAndCategory(String name) throws IOException{
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet("http://localhost:8080/Server/item-category?name=" + name);
+        HttpGet httpGet = new HttpGet(ConfigHttpUtils.URL + "/item-category?name=" + name);
         HttpResponse httpResponse = client.execute(httpGet);
         String json_string = EntityUtils.toString(httpResponse.getEntity());
         System.out.println(json_string);
@@ -60,7 +61,7 @@ public class ItemApi {
     
     public static List<Item> getItemsByCategory(String category) throws IOException, URISyntaxException{
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet("http://localhost:8080/Server/item");
+        HttpGet httpGet = new HttpGet(ConfigHttpUtils.URL + "/item");
         URI uri = new URIBuilder(httpGet.getURI())
         .addParameter("category", category)
         .build();
@@ -80,7 +81,7 @@ public class ItemApi {
     
     public static List<Item> getItemsByName(String name) throws IOException, URISyntaxException{
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet("http://localhost:8080/Server/item");
+        HttpGet httpGet = new HttpGet(ConfigHttpUtils.URL + "/item");
         URI uri = new URIBuilder(httpGet.getURI())
         .addParameter("name", name)
         .build();
@@ -107,7 +108,7 @@ public class ItemApi {
                 + "&category=" + category;
         RequestBody body = RequestBody.create(mediaType, bodyStr);
         Request request = new Request.Builder()
-        .url("http://localhost:8080/Server/add-item")
+        .url(ConfigHttpUtils.URL + "/add-item")
         .method("POST", body)
         .addHeader("Content-Type", "application/x-www-form-urlencoded")
         .build();
@@ -121,22 +122,24 @@ public class ItemApi {
     }
     
     public static boolean updateItem(Integer id, String name, Double price, String unit, String category) throws IOException{
+
         OkHttpClient client = new OkHttpClient().newBuilder()
-            .build();
-        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        String bodyStr = "id=" + id + "&name=" + name 
+        .build();
+        String str = "id=" + id + "&name=" + name 
                 + "&price=" + String.valueOf(price) 
                 + "&unit=" + unit 
                 + "&category=" + category;
-        RequestBody body = RequestBody.create(mediaType, bodyStr);
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = RequestBody.create(mediaType, "");
         Request request = new Request.Builder()
-            .url("http://localhost:8080/Server/update-item")
-            .method("POST", body)
-            .addHeader("Content-Type", "application/x-www-form-urlencoded")
-            .build();
+        .url(ConfigHttpUtils.URL + "/update-item?"+str)
+        .method("PUT", body)
+        .build();
         Response response = client.newCall(request).execute();
+        
         String json_string = response.body().string();
         System.out.println(json_string);
+        
         if(json_string.equals("true")){
             return true;
         }
@@ -149,7 +152,7 @@ public class ItemApi {
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
         RequestBody body = RequestBody.create(mediaType, "id="+id);
         Request request = new Request.Builder()
-        .url("http://localhost:8080/Server/delete-item")
+        .url(ConfigHttpUtils.URL + "/delete-item")
         .method("DELETE", body)
         .addHeader("Content-Type", "application/x-www-form-urlencoded")
         .build();

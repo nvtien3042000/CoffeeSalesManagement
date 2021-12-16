@@ -1,5 +1,6 @@
 package com.nguyenvantien.csm.api;
 
+import com.nguyenvantien.csm.utils.ConfigHttpUtils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class BillApi {
     
     public static boolean insertBill(String discount, String total, String date, String itemsList) throws UnsupportedEncodingException, IOException{
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpPost httpPost = new HttpPost("http://localhost:8080/Server/add-bill");
+        HttpPost httpPost = new HttpPost(ConfigHttpUtils.URL + "/add-bill");
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("discount", discount));
         params.add(new BasicNameValuePair("total", total));

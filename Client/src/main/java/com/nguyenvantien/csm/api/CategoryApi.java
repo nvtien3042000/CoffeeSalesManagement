@@ -1,5 +1,6 @@
 package com.nguyenvantien.csm.api;
 
+import com.nguyenvantien.csm.utils.ConfigHttpUtils;
 import java.io.IOException;
 import java.util.List;
 import org.apache.http.HttpResponse;
@@ -17,7 +18,7 @@ public class CategoryApi {
     
     public static List<Object> getAllCategory() throws IOException{
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet("http://localhost:8080/Server/category");
+        HttpGet httpGet = new HttpGet(ConfigHttpUtils.URL + "/category");
         HttpResponse httpResponse = client.execute(httpGet);
         String json_string = EntityUtils.toString(httpResponse.getEntity());
         System.out.println(json_string);

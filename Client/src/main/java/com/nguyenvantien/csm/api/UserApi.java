@@ -2,6 +2,7 @@ package com.nguyenvantien.csm.api;
 
 import com.google.gson.Gson;
 import com.nguyenvantien.csm.model.User;
+import com.nguyenvantien.csm.utils.ConfigHttpUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import org.json.JSONArray;
 public class UserApi {
     public static List<User> getUsers(String name) throws IOException{
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet("http://localhost:8080/Server/users?name=" + name);
+        HttpGet httpGet = new HttpGet(ConfigHttpUtils.URL + "/users?name=" + name);
         HttpResponse httpResponse = client.execute(httpGet);
         String json_string = EntityUtils.toString(httpResponse.getEntity());
         System.out.println(json_string);
@@ -45,7 +46,7 @@ public class UserApi {
                         "&role=" + role + "";
         RequestBody body = RequestBody.create(mediaType, bodyStr);
         Request request = new Request.Builder()
-            .url("http://localhost:8080/Server/add-user")
+            .url(ConfigHttpUtils.URL + "/add-user")
             .method("POST", body)
             .addHeader("Content-Type", "application/x-www-form-urlencoded")
             .build();
@@ -71,7 +72,7 @@ public class UserApi {
                         "&role=" + role + "";
         RequestBody body = RequestBody.create(mediaType, bodyStr);
         Request request = new Request.Builder()
-            .url("http://localhost:8080/Server/update-user")
+            .url(ConfigHttpUtils.URL + "/update-user")
             .method("POST", body)
             .addHeader("Content-Type", "application/x-www-form-urlencoded")
             .build();
@@ -90,7 +91,7 @@ public class UserApi {
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
         RequestBody body = RequestBody.create(mediaType, "id="+id);
         Request request = new Request.Builder()
-          .url("http://localhost:8080/Server/delete-user")
+          .url(ConfigHttpUtils.URL + "/delete-user")
           .method("DELETE", body)
           .addHeader("Content-Type", "application/x-www-form-urlencoded")
           .build();

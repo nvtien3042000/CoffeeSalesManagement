@@ -1,6 +1,7 @@
 package com.nguyenvantien.csm.view;
 
 import com.nguyenvantien.csm.api.ItemApi;
+import com.nguyenvantien.csm.api.LoginApi;
 import com.nguyenvantien.csm.api.RevenueApi;
 import com.nguyenvantien.csm.api.UserApi;
 import com.nguyenvantien.csm.model.ItemCategoryDto;
@@ -177,7 +178,7 @@ public class Admin extends javax.swing.JFrame {
         jTabbedPane1.setBackground(new java.awt.Color(51, 51, 255));
         jTabbedPane1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jTabbedPane1.setTabPlacement(javax.swing.JTabbedPane.LEFT);
-        jTabbedPane1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        jTabbedPane1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
 
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
 
@@ -504,6 +505,11 @@ public class Admin extends javax.swing.JFrame {
 
     private void logoutMnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutMnActionPerformed
         this.setVisible(false);
+        try {
+            LoginApi.logout(this.user.getUserName());
+        } catch (IOException ex) {
+            Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+        }
         new Login().setVisible(true);
     }//GEN-LAST:event_logoutMnActionPerformed
 

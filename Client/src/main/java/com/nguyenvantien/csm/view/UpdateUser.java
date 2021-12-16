@@ -67,6 +67,7 @@ public class UpdateUser extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cập nhập người dùng");
+        setBackground(new java.awt.Color(204, 204, 204));
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
         jPanel1.setBackground(new java.awt.Color(102, 255, 0));
@@ -79,6 +80,7 @@ public class UpdateUser extends javax.swing.JFrame {
 
         getContentPane().add(jPanel1);
 
+        jPanel2.setBackground(new java.awt.Color(239, 239, 239));
         jPanel2.setLayout(new java.awt.GridLayout(6, 2, 0, 30));
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -126,6 +128,7 @@ public class UpdateUser extends javax.swing.JFrame {
 
         getContentPane().add(jPanel2);
 
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 10, 20, 10));
         jPanel3.setMaximumSize(new java.awt.Dimension(32767, 2000));
         jPanel3.setMinimumSize(new java.awt.Dimension(182, 80));

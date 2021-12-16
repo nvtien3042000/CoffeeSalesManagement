@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.nguyenvantien.csm.api.BillApi;
 import com.nguyenvantien.csm.api.CategoryApi;
 import com.nguyenvantien.csm.api.ItemApi;
+import com.nguyenvantien.csm.api.LoginApi;
 import com.nguyenvantien.csm.model.Item;
 import com.nguyenvantien.csm.utils.ItemsListUtils;
 import com.nguyenvantien.csm.utils.StringUtils;
@@ -22,7 +23,17 @@ import javax.swing.table.DefaultTableModel;
 
 public class Home extends javax.swing.JFrame {
 
+    private static String name = "";
+    
     public Home() throws IOException {
+        initComponents();
+        setExtendedState(MAXIMIZED_BOTH);
+        setCategory();
+        setTable();
+    }
+    
+    public Home(String name) throws IOException {
+        this.name = name;
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
         setCategory();
@@ -137,6 +148,7 @@ public class Home extends javax.swing.JFrame {
 
         jPanel9.setLayout(new java.awt.GridLayout(1, 1));
 
+        billTb.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         billTb.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -166,11 +178,11 @@ public class Home extends javax.swing.JFrame {
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 206, Short.MAX_VALUE)
+            .addGap(0, 409, Short.MAX_VALUE)
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 145, Short.MAX_VALUE)
+            .addGap(0, 153, Short.MAX_VALUE)
         );
 
         jPanel8.add(jPanel10);
@@ -183,6 +195,7 @@ public class Home extends javax.swing.JFrame {
 
         jPanel18.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel5.setText("Tiền hàng :");
         jPanel18.add(jLabel5);
 
@@ -190,6 +203,7 @@ public class Home extends javax.swing.JFrame {
 
         jPanel16.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
+        totalMoneyLb.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         totalMoneyLb.setText("0 VNĐ");
         totalMoneyLb.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
         jPanel16.add(totalMoneyLb);
@@ -202,6 +216,7 @@ public class Home extends javax.swing.JFrame {
 
         jPanel20.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel8.setText("Giảm(%) :");
         jPanel20.add(jLabel8);
 
@@ -209,6 +224,7 @@ public class Home extends javax.swing.JFrame {
 
         jPanel21.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
+        discountSp.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         discountSp.setModel(new javax.swing.SpinnerNumberModel(0, 0, 100, 5));
         discountSp.setMinimumSize(new java.awt.Dimension(60, 30));
         discountSp.setPreferredSize(new java.awt.Dimension(60, 30));
@@ -222,6 +238,7 @@ public class Home extends javax.swing.JFrame {
 
         jPanel23.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
+        jLabel12.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel12.setText("Tiền khách trả :");
         jPanel23.add(jLabel12);
 
@@ -230,9 +247,11 @@ public class Home extends javax.swing.JFrame {
         jPanel24.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
         customerPayTf.setColumns(6);
+        customerPayTf.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         customerPayTf.setText("0");
         jPanel24.add(customerPayTf);
 
+        finalTotalLb.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         finalTotalLb.setText("VNĐ");
         finalTotalLb.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
         jPanel24.add(finalTotalLb);
@@ -243,6 +262,9 @@ public class Home extends javax.swing.JFrame {
 
         jPanel13.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
 
+        payBt.setBackground(new java.awt.Color(153, 255, 153));
+        payBt.setFont(new java.awt.Font("Tahoma", 3, 22)); // NOI18N
+        payBt.setIcon(new javax.swing.ImageIcon("E:\\CoffeeSalesManagement\\Client\\images\\payment-icon.png")); // NOI18N
         payBt.setText("Thanh toán");
         payBt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -251,6 +273,9 @@ public class Home extends javax.swing.JFrame {
         });
         jPanel13.add(payBt);
 
+        resetBt.setBackground(new java.awt.Color(237, 12, 21));
+        resetBt.setFont(new java.awt.Font("Tahoma", 3, 22)); // NOI18N
+        resetBt.setIcon(new javax.swing.ImageIcon("E:\\CoffeeSalesManagement\\Client\\images\\cancel-icon.png")); // NOI18N
         resetBt.setText("Hủy");
         resetBt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -278,17 +303,19 @@ public class Home extends javax.swing.JFrame {
         jPanel29.setLayout(jPanel29Layout);
         jPanel29Layout.setHorizontalGroup(
             jPanel29Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 82, Short.MAX_VALUE)
+            .addGap(0, 78, Short.MAX_VALUE)
         );
         jPanel29Layout.setVerticalGroup(
             jPanel29Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 52, Short.MAX_VALUE)
+            .addGap(0, 48, Short.MAX_VALUE)
         );
 
         jPanel15.add(jPanel29);
 
+        upQuantityBt.setBackground(new java.awt.Color(255, 255, 255));
+        upQuantityBt.setIcon(new javax.swing.ImageIcon("E:\\CoffeeSalesManagement\\Client\\images\\up-icon.png")); // NOI18N
         upQuantityBt.setText("Tăng + +");
-        upQuantityBt.setMaximumSize(new java.awt.Dimension(120, 21));
+        upQuantityBt.setMaximumSize(new java.awt.Dimension(145, 21));
         upQuantityBt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 upQuantityBtActionPerformed(evt);
@@ -300,17 +327,19 @@ public class Home extends javax.swing.JFrame {
         jPanel30.setLayout(jPanel30Layout);
         jPanel30Layout.setHorizontalGroup(
             jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 82, Short.MAX_VALUE)
+            .addGap(0, 78, Short.MAX_VALUE)
         );
         jPanel30Layout.setVerticalGroup(
             jPanel30Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 52, Short.MAX_VALUE)
+            .addGap(0, 48, Short.MAX_VALUE)
         );
 
         jPanel15.add(jPanel30);
 
+        downQuantityBt.setBackground(new java.awt.Color(255, 255, 255));
+        downQuantityBt.setIcon(new javax.swing.ImageIcon("E:\\CoffeeSalesManagement\\Client\\images\\down-icon.png")); // NOI18N
         downQuantityBt.setText("Giảm - -");
-        downQuantityBt.setMaximumSize(new java.awt.Dimension(120, 21));
+        downQuantityBt.setMaximumSize(new java.awt.Dimension(145, 21));
         downQuantityBt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 downQuantityBtActionPerformed(evt);
@@ -326,17 +355,20 @@ public class Home extends javax.swing.JFrame {
         jPanel27.setLayout(jPanel27Layout);
         jPanel27Layout.setHorizontalGroup(
             jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 82, Short.MAX_VALUE)
+            .addGap(0, 78, Short.MAX_VALUE)
         );
         jPanel27Layout.setVerticalGroup(
             jPanel27Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 52, Short.MAX_VALUE)
+            .addGap(0, 48, Short.MAX_VALUE)
         );
 
         jPanel17.add(jPanel27);
 
+        deleteItemBt.setBackground(new java.awt.Color(255, 255, 255));
+        deleteItemBt.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        deleteItemBt.setIcon(new javax.swing.ImageIcon("E:\\CoffeeSalesManagement\\Client\\images\\Actions-edit-delete-icon.png")); // NOI18N
         deleteItemBt.setText("Xóa >>");
-        deleteItemBt.setMaximumSize(new java.awt.Dimension(120, 21));
+        deleteItemBt.setMaximumSize(new java.awt.Dimension(145, 21));
         deleteItemBt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteItemBtActionPerformed(evt);
@@ -348,17 +380,19 @@ public class Home extends javax.swing.JFrame {
         jPanel28.setLayout(jPanel28Layout);
         jPanel28Layout.setHorizontalGroup(
             jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 82, Short.MAX_VALUE)
+            .addGap(0, 78, Short.MAX_VALUE)
         );
         jPanel28Layout.setVerticalGroup(
             jPanel28Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 52, Short.MAX_VALUE)
+            .addGap(0, 48, Short.MAX_VALUE)
         );
 
         jPanel17.add(jPanel28);
 
+        addItemBt.setBackground(new java.awt.Color(255, 255, 255));
+        addItemBt.setIcon(new javax.swing.ImageIcon("E:\\CoffeeSalesManagement\\Client\\images\\add-item-icon.png")); // NOI18N
         addItemBt.setText("<< Thêm");
-        addItemBt.setMaximumSize(new java.awt.Dimension(120, 21));
+        addItemBt.setMaximumSize(new java.awt.Dimension(145, 21));
         addItemBt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addItemBtActionPerformed(evt);
@@ -372,7 +406,7 @@ public class Home extends javax.swing.JFrame {
         jPanel25.setLayout(jPanel25Layout);
         jPanel25Layout.setHorizontalGroup(
             jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 82, Short.MAX_VALUE)
+            .addGap(0, 78, Short.MAX_VALUE)
         );
         jPanel25Layout.setVerticalGroup(
             jPanel25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -391,6 +425,7 @@ public class Home extends javax.swing.JFrame {
         jPanel1.setPreferredSize(new java.awt.Dimension(135, 40));
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.X_AXIS));
 
+        jLabel1.setFont(new java.awt.Font("Tahoma", 3, 12)); // NOI18N
         jLabel1.setText("  Tìm kiếm:    ");
         jLabel1.setMaximumSize(new java.awt.Dimension(50, 13));
         jPanel1.add(jLabel1);
@@ -398,7 +433,8 @@ public class Home extends javax.swing.JFrame {
         searchTf.setColumns(50);
         jPanel1.add(searchTf);
 
-        searchBt.setText("Tìm");
+        searchBt.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        searchBt.setIcon(new javax.swing.ImageIcon("E:\\CoffeeSalesManagement\\Client\\images\\zoom-in-icon.png")); // NOI18N
         searchBt.setMaximumSize(new java.awt.Dimension(21, 71));
         searchBt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -609,7 +645,13 @@ public class Home extends javax.swing.JFrame {
     private void logoutMnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutMnActionPerformed
         resetValue();
         this.setVisible(false);
+        try {
+            LoginApi.logout(name);
+        } catch (IOException ex) {
+            Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+        }
         new Login().setVisible(true);
+        
     }//GEN-LAST:event_logoutMnActionPerformed
 
     public void resetValue(){
@@ -671,6 +713,14 @@ public class Home extends javax.swing.JFrame {
                 StringUtils.formatMoney(lists.get(i).getPrice().toString()),
                 lists.get(i).getUnit(),
             });
+        }
+    }
+    
+    public static void main(String[] args) {
+        try {
+            new Home().setVisible(true);
+        } catch (IOException ex) {
+            Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

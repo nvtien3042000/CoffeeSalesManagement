@@ -34,10 +34,11 @@ public class Login extends javax.swing.JFrame {
 
         Title.setLayout(new java.awt.GridLayout(1, 1));
 
-        loginLab.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+        loginLab.setFont(new java.awt.Font("Tahoma", 3, 34)); // NOI18N
         loginLab.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        loginLab.setText("Đăng Nhâp");
+        loginLab.setText("Đăng Nhập");
         Title.add(loginLab);
+        loginLab.getAccessibleContext().setAccessibleName("Đăng Nhập");
 
         getContentPane().add(Title);
 
@@ -75,7 +76,7 @@ public class Login extends javax.swing.JFrame {
             UserDto user = LoginApi.isLogin(userNameTf.getText(), passwordPw.getText());
             if(user.getRole() != null){
                 if(user.getRole().equals("user")) {
-                    new Home().setVisible(true);
+                    new Home(user.getUserName()).setVisible(true);
                     this.setVisible(false);
                 } else if(user.getRole().equals("admin")){
                     new Admin(user).setVisible(true);

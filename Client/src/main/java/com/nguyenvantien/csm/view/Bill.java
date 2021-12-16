@@ -1,6 +1,7 @@
 package com.nguyenvantien.csm.view;
 
 import com.nguyenvantien.csm.utils.StringUtils;
+import javax.swing.JFrame;
 
 public class Bill extends javax.swing.JFrame {
 
@@ -12,13 +13,25 @@ public class Bill extends javax.swing.JFrame {
         
     }
     public Bill(String date, String total, String discount, String finalTotal, String customerPay, Home home) {
-        this.setUndecorated(true);
+//        this.setUndecorated(true);
         initComponents();
         setSize(400, 600);
         this.setLocationRelativeTo(null);
         setBill(date, total, discount, finalTotal, customerPay);
         this.home = home;
         home.setEnabled(false);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
+//        this.addWindowListener(new java.awt.event.WindowAdapter() {
+//            @Override
+//            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+//                home.setEnabled(true);
+//                home.resetValue();
+//                setVisible(false);
+//            }
+//        });
+        
+        
     }
     private void setBill(String date, String total, String discount, String finalTotal, String customerPay){
         dateLb.setText(date);
@@ -73,13 +86,15 @@ public class Bill extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Hóa đơn");
-        setBackground(new java.awt.Color(204, 255, 204));
+        setBackground(new java.awt.Color(0, 0, 0));
+        setUndecorated(true);
         getContentPane().setLayout(new java.awt.GridLayout(1, 1));
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 255, 0), 3));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        jPanel1.setForeground(new java.awt.Color(204, 255, 204));
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.Y_AXIS));
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 20)); // NOI18N
         jLabel1.setText("Thông tin hóa đơn");
         jPanel2.add(jLabel1);
 

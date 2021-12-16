@@ -2,6 +2,7 @@ package com.nguyenvantien.csm.api;
 
 import com.google.gson.Gson;
 import com.nguyenvantien.csm.model.Revenue;
+import com.nguyenvantien.csm.utils.ConfigHttpUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class RevenueApi {
     
     public static List<Revenue> getRevenues(String time) throws IOException{
         CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet("http://localhost:8080/Server/revenue?time=" + time);
+        HttpGet httpGet = new HttpGet(ConfigHttpUtils.URL + "/revenue?time=" + time);
         HttpResponse httpResponse = client.execute(httpGet);
         String json_string = EntityUtils.toString(httpResponse.getEntity());
         System.out.println(json_string);
